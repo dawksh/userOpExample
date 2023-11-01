@@ -13,6 +13,9 @@ import { config } from "dotenv";
 
 config();
 
+const TO = "0x4006c21A130D70000f59e009E4f81DB18eb1Ef00";
+const VALUE = 0.5;
+
 const main = async () => {
 
     const paymasterRpcUrl = process.env.PAYMASTER_URL as string;
@@ -31,6 +34,27 @@ const main = async () => {
     const address = builder.getSender();
 
     console.log(address);
+
+    const send = {
+        to: TO,
+        value: ethers.utils.parseEther(VALUE.toString()),
+        data: "0x",
+    }
+
+    const calls = [send]
+
+    const client = await Client.init(rpcUrl);
+    const res = await client.sendUserOperation(builder.executeBatch(calls), {
+        onBuild: (op) => { console.log(op) },
+    });
+
+    console.log(`UserOpHash: ${res.userOpHash}`);
+    console.log("Waiting for transaction...");
+    const ev = await res.wait()
+    console.log(`Transaction hash: ${ev?.transactionHash ?? null}`);
+
+
 }
+
 
 main()
