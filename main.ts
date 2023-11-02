@@ -37,7 +37,7 @@ const main = async () => {
 
     const send = {
         to: TO,
-        value: ethers.utils.parseEther(VALUE.toString()),
+        value: ethers.utils.parseEther("0"),
         data: "0x",
     }
 
